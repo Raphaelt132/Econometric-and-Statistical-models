@@ -1,4 +1,4 @@
-"3 Equation US VAR (Interest,Inflation,Bond Yield)"
+"3 Equation VAR"
 
 library(vars)
 library(mFilter)
@@ -8,9 +8,10 @@ library(forecast)
 library(tidyverse)
 library(urca)
 
-ggsave("graph.png", width=15.10, height=9.5, units="in")
-
 #Declaring variables as time series
+#IR - Level
+#Tenyr - Ten year bond yields % chg
+#CPI - %chg in CPI
 IR <- ts(FEDFUNDS$IR, start = c(2000,1,1), frequency = 12)
 TENYR <- ts(FEDFUNDS$TENYR, start = c(2000,1,1), frequency = 12)
 CPI <- ts(FEDFUNDS$CPI, start = c(2000,1,1), frequency = 12)
@@ -19,6 +20,7 @@ CPI <- ts(FEDFUNDS$CPI, start = c(2000,1,1), frequency = 12)
 autoplot(IR)
 autoplot(TENYR)
 autoplot(CPI)
+
 
 #Augmented dickey fuller for stationarity
 adf.test(IR)
@@ -34,6 +36,15 @@ colnames(V2) <- cbind("IR", "TENYR", "CPI")
 #Using AIC for optimal lag selection
 lagselect <- VARselect(V2, lag.max = 9, type="const")
 lagselect$selection
+
+#acf and pacf
+acf(IR, main = "ACF for Interest rates")
+acf(TENYR, main = "ACF for Bond yields")
+acf(CPI, main = "ACF for Iinflation")
+
+pacf(IR, main = "PACF for Interest rates")
+pacf(TENYR, main = "PACF for Bond yields")
+pacf(CPI, main = "PACF for Inflation")
 
 #VAR model: p is the lag length defined by the AIC
 V1 <- VAR(V2, p=2, type="const", season=NULL, exog=NULL)
