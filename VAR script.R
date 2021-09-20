@@ -81,6 +81,8 @@ causality(V1, cause="CPI")
 
 #Impulse response functions
 #Shows us what happens to Y when variable X is shocked positively by one standard deviation
+#Forecasted over the next 12 periods (months). This is the approximate time it takes for monetary policy to be effective
+#boot=TRUE means that the irf uses bootstrapping with a 95% CI
 IRirf <- irf(V1, impulse="IR", response = "IR", n.ahead=12, boot=TRUE)
 plot(IRirf, ylab = "IR", main="IR's shock to Interest Rates")
 
