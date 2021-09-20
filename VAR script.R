@@ -1,4 +1,5 @@
 "3 Equation Vector Auto Regression"
+"This is a 3 variable macro model using federal reserve data from the US"
 #Loading relevant R packages
 library(vars)
 library(mFilter)
