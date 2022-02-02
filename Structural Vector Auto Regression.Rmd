@@ -4,7 +4,10 @@ author: "Raphael Tang"
 date: "8/24/2021"
 output: pdf_document
 ---
-#This script is still a work in progress. The groundwork for the matrix algebra of the model is mostly done, but more rigorous statistical testing could be added to filter out potential issues.
+#This script is still a work in progress. The groundwork for the matrix algebra of the model is mostly done,
+but more rigorous statistical testing could be added to filter out potential issues.
+#This is different from the traditional VAR models because instead of traditional variables, we input economic theory
+like the output gap or inflation rate, instead of raw data.
 
 ```{r}
 library(urca)
