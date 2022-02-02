@@ -4,6 +4,7 @@ author: "Raphael Tang"
 date: "8/24/2021"
 output: pdf_document
 ---
+#This script is still a work in progress. The groundwork for the matrix algebra of the model is mostly done, but more rigorous statistical testing could be added to filter out potential issues.
 
 ```{r}
 library(urca)
@@ -16,7 +17,7 @@ library(tidyverse)
 #Loading the Dataset (Change variables below according to data set)
 macro <- read_csv(file.choose())
 head(macro)
-#Creating thee Time Series Objectives
+#Creating the Time Series Objectives
 y <- ts(macro$`Output Gap`, start = c(2000,1,1), frequency = 4)
 pi <- ts(macro$CPI, start = c(2000,1,1), frequency = 4)
 r <- ts(macro$RRP, start = c(2000,1,1), frequency = 4)
