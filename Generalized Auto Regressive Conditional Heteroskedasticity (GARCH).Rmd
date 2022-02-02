@@ -1,0 +1,112 @@
+---
+title: "GARCH"
+author: "Raphael Tang"
+date: "10/15/2021"
+output: pdf_document
+---
+
+Loading packages
+```{r}
+library(quantmod)
+library(rugarch)
+library(rmgarch)
+library(vars)
+library(zoo)
+library(tidyverse)
+library(mFilter)
+library(tseries)
+library(TSstudio)
+library(forecast)
+library(urca)
+```
+
+Getting the data
+```{r}
+startDate = as.Date("2007-01-01") #Specify period of time we are interested in
+endDate = as.Date("2018-04-30")
+
+Returns <- ts(Proposal_1_$Returns, start = c(2000,1,30), frequency = 52)
+
+#Str command is to make the object a time series
+str(Returns)
+
+#Normal graph
+autoplot(Returns)
+
+
+```
+
+Diagnostics
+```{r}
+#Augmented dickey fuller
+adf.test(Returns)
+
+
+#Test for ARCH effects 
+arch.test(Returns, lags.multi = 9, multivariate.only = TRUE)
+
+#Test for normality of residuals
+normality.test(Returns, multivariate.only = TRUE)
+```
+
+Further specification options
+sGARCH under the variance model changes the standard GARCH order
+Mean model changes the ARMA fitting
+Distribution model sees the distribution of epsilon
+```{r}
+garchspec <- ugarchspec(mean.model = list(armaOrder=c(1,1), include.mean = TRUE), variance.model = list(model="sGARCH", garchOrder = c(1,1)), distribution.model="norm")
+
+garchspec
+```
+
+Lag order
+```{r}
+#AIC
+infocriteria(garchspec)
+#BIC
+BIC(garchspec)
+
+```
+
+Estimating the model
+```{r}
+garchfit <-  ugarchfit(spec = garchspec, data = rIBM)
+garchfit
+```
+
+Estimated coefficients and residuals
+```{r}
+#For estimated coefficients
+garchcoef <- coef(garchfit)
+#Unconditional variance
+garchuncvar <- uncvariance(garchfit)
+#Predicted mean
+garchmean <- fitted(garchfit)
+#Volatility (predicted)
+garchvol <- sigma(garchfit)
+```
+
+Maximum likelihood estimation
+```{r}
+MLE <- likelihood(garchfit)
+```
+
+Conditional variance graph
+```{r}
+plot(ug_res2, type = "l")
+lines(ug_var, col = "green")
+garchvol <- sigma(ugarchfit)
+plot(garchvol)
+```
+
+Forecasting
+```{r}
+ugfore <- ugarchforecast(ugfit, n.ahead = 10)
+ugfore
+
+#Sigma forecast
+ug_f <- ugfore@forecast$sigmaFor
+plot(ug_f, type = "l")
+```
+
+Note that the volatility is the square root of the conditional variance.
